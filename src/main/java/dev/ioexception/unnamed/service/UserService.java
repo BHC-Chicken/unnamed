@@ -1,6 +1,6 @@
 package dev.ioexception.unnamed.service;
 
-import dev.ioexception.unnamed.domain.User;
+import dev.ioexception.unnamed.domain.UserAccount;
 import dev.ioexception.unnamed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     UserRepository userRepository;
-    public User findByUsername(String username) {
+    public UserAccount findByUsername(String username) {
         return userRepository.findByUsername(username);
 
     }
