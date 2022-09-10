@@ -1,6 +1,8 @@
 package dev.ioexception.unnamed.config;
 
-import dev.ioexception.unnamed.repository.UserRepository;
+import dev.ioexception.unnamed.dto.security.BoardPrincipal;
+import dev.ioexception.unnamed.dto.UserAccountDto;
+import dev.ioexception.unnamed.repository.UserAccountRepository;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -34,9 +37,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepository) {
-        return username -> userRepository
-                .findByUsername(username)
+    public UserDetailsService userDetailsService(UserAccountRepository userAccountRepository) {
+        return username -> userAccountRepository
+                .findById(username)
                 .map(UserAccountDto::from)
                 .map(BoardPrincipal::from)
                 .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을수 없습니다. - username : " + username));
