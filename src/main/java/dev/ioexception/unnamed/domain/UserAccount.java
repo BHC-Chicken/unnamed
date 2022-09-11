@@ -3,9 +3,7 @@ package dev.ioexception.unnamed.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,68 +24,103 @@ import java.util.Objects;
         @Index(columnList = "createdBy")
 })
 @Entity
-public class UserAccount {
+public class UserAccount implements UserDetails {
     @Id
     @Column(length = 50)
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int Id;
 
     @Setter
     @Column(nullable = false)
-    private String userPassword;
+    private String username;
 
     @Setter
     @Column(length = 100)
-    private String email;
+    private String password;
     @Setter
     @Column(length = 100)
     private String nickname;
+
     @Setter
-    private String memo;
+    @Column(length = 100)
+    private String authority;
+
+    @Setter
+    @Column(nullable = false)
+    private boolean isEmailVerifiedFlag;
+
+    @Setter
+    @Column(nullable = false)
+    private boolean isSuspendedFlag;
+
+    @Setter
+    @Column(nullable = false)
+    private boolean isDeletedFlag;
+
+    @Setter
+    @Column(nullable = false)
+    private boolean isStdCardVerifiedFlag;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt; // 생성일시
 
-    @CreatedBy
-    @Column(nullable = false, updatable = false, length = 100)
-    private String createdBy; // 생성자
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime modifiedAt; // 수정일시
 
-    @LastModifiedBy
-    @Column(nullable = false, length = 100)
-    private String modifiedBy; // 수정자
 
 
     protected UserAccount() {
     }
 
-    private UserAccount(String userId, String userPassword, String email, String nickname, String memo) {
-        this.userId = userId;
-        this.userPassword = userPassword;
-        this.email = email;
+    public UserAccount(String username, String password, String nickname, String authority) {
+        this.username = username;
+        this.password = password;
         this.nickname = nickname;
-        this.memo = memo;
+        this.authority = authority;
     }
 
-    public static UserAccount of(String userId, String userPassword, String email, String nickname, String memo) {
-        return new UserAccount(userId, userPassword, email, nickname, memo);
+    public static UserAccount of(String username, String password, String email, String nickname) {
+        return new UserAccount(username, password, email, nickname);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserAccount that)) return false;
-        return userId != null && userId.equals(that.getUserId());
+        return username != null && username.equals(that.getUsername());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(username);
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton((GrantedAuthority) () -> authority);
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
 }
