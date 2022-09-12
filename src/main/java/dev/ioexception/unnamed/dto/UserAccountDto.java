@@ -5,46 +5,39 @@ import dev.ioexception.unnamed.domain.UserAccount;
 import java.time.LocalDateTime;
 
 public record UserAccountDto(
-        String userId,
-        String userPassword,
-        String email,
+        String username,
+        String password,
         String nickname,
-        String memo,
+        String authority,
         LocalDateTime createdAt,
-        String createdBy,
-        LocalDateTime modifiedAt,
-        String modifiedBy
+        LocalDateTime modifiedAt
 ) {
 
-    public static UserAccountDto of(String userId, String userPassword, String email, String nickname, String memo) {
-        return new UserAccountDto(userId, userPassword, email, nickname, memo, null, null, null, null);
+    public static UserAccountDto of(String username, String password, String nickname, String authority) {
+        return new UserAccountDto(username, password, nickname, authority, null, null);
     }
 
-    public static UserAccountDto of(String userId, String userPassword, String email, String nickname, String memo, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, String modifiedBy) {
-        return new UserAccountDto(userId, userPassword, email, nickname, memo, createdAt, createdBy, modifiedAt, modifiedBy);
+    public static UserAccountDto of(String userId, String userPassword, String email, String nickname, String memo, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        return new UserAccountDto(userId, userPassword, email, nickname, createdAt, modifiedAt);
     }
 
     public static UserAccountDto from(UserAccount entity) {
         return new UserAccountDto(
-                entity.getUserId(),
-                entity.getUserPassword(),
-                entity.getEmail(),
+                entity.getUsername(),
+                entity.getPassword(),
                 entity.getNickname(),
-                entity.getMemo(),
+                entity.getAuthority(),
                 entity.getCreatedAt(),
-                entity.getCreatedBy(),
-                entity.getModifiedAt(),
-                entity.getModifiedBy()
+                entity.getModifiedAt()
         );
     }
 
     public UserAccount toEntity() {
         return UserAccount.of(
-                userId,
-                userPassword,
-                email,
+                username,
+                password,
                 nickname,
-                memo
+                authority
         );
     }
 
